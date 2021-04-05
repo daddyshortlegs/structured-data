@@ -104,25 +104,37 @@
   (assoc book :authors (set (:authors book))))
 
 (defn has-author? [book author]
-  )
+  (contains? (:authors book) author))
 
 (defn authors [books]
-  :-)
+  (apply clojure.set/union (map (fn[x] (:authors x)) books)))
 
 (defn all-author-names [books]
-  :-)
+  (set (map (fn[item] (:name item)) (authors books))))
 
 (defn author->string [author]
-  :-)
+  (let [name (:name author)
+        birth-year (:birth-year author)
+        death-year (:death-year author)
+        years (if (= nil birth-year) "" (str " (" birth-year " - " death-year ")"))]
+    (str name years)))
 
 (defn authors->string [authors]
-  :-)
+  (apply str (interpose ", " (map (fn[author] (author->string author)) authors))))
 
 (defn book->string [book]
-  :-)
+  (str (:title book) ", written by " (authors->string (:authors book))))
+
 
 (defn books->string [books]
-  :-)
+  (let [num-books (count books)
+        prefix (cond
+                 (= 1 num-books) "1 book."
+                 :else (str num-books " books."))]
+    (if (= 0 num-books)
+      "No books."
+      (str prefix " " (apply str (interpose ". " (map (fn[book] (book->string book)) books))) "."))
+    ))
 
 (defn books-by-author [author books]
   :-)
